@@ -1,5 +1,25 @@
 import React, { Component } from 'react';
-import './App.css';
+import injectSheet from 'react-jss';
+import Form from './Form';
+import Typography from 'material-ui/Typography';
+
+const apiKey = 'gKvbPlPFx9WoglD03wWua4EU2ucElFxZ';
+const styles = {
+  app: {
+    padding: '20px',
+  },
+};
+
+const Results = ({image}) => {
+  const firstSearch = image === '';
+
+  if(firstSearch) {
+    return <p>Seach for something!</p>
+  }
+
+  return <img src={image} alt={image} height="400" />
+
+};
 
 class App extends Component {
   state = {
@@ -16,7 +36,6 @@ class App extends Component {
   handleSubmit = (event) => {
     event.preventDefault();
 
-    const apiKey = 'gKvbPlPFx9WoglD03wWua4EU2ucElFxZ';
     const url = `http://api.giphy.com/v1/gifs/search?q=${this.state.term}&api_key=${apiKey}`;
 
     fetch(url)
@@ -33,17 +52,19 @@ class App extends Component {
   render() {
 
     const { term, img } = this.state;
+    const { classes } = this.props;
 
     return (
-      <div>
-        <form onSubmit={this.handleSubmit}>
-          <input type="text" value={term} onChange={this.handleChange} />
-          <button type="submit">Search</button>
-        </form>
-        <img src={img} height="200"/>
+      <div className={classes.app}>
+        <Typography variant="title" gutterBottom>GIF Search</Typography>
+        <Form
+          onSubmit={this.handleSubmit}
+          onChange={this.handleChange}
+          searchTerm={term}/>
+        <Results image={img}/>
       </div>
     );
   }
 }
 
-export default App;
+export default injectSheet(styles)(App);
